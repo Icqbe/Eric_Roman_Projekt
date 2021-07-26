@@ -1,0 +1,5 @@
+﻿  Board.cpp
+  Quelle.cpp
+C:\Users\Eric Schust\source\repos\Eric_Roman_Projekt\Eric_Roman_Projekt\Quelle.cpp(1,13): warning C4326: return type of 'main' should be 'int' instead of 'void'
+  Generating Code...
+  Eric_Roman_Projekt.vcxproj -> C:\Users\Eric Schust\source\repos\Eric_Roman_Projekt\Debug\Eric_Roman_Projekt.exe
