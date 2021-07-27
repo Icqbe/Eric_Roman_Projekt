@@ -15,6 +15,6 @@ public:
 	bool checkWin(int row);
 	int lastAvailable;
 	int player;
-
+	void saveBoard();
 };
 

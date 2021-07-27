@@ -1,5 +1,7 @@
 #include "Board.h"
 #include <iostream>
+#include <string>
+#include <libpq-fe.h>
 using namespace std;
 
 //Spielbrett 7 Spalten 6 Reihen, 21 Spielsteine je Spieler, Abwechselnd, Vier in einer Reihe gewinnt (diagonal, senkrecht, waagrecht)
@@ -14,6 +16,59 @@ void Board::createBoard() {
 	return;
 }
 
+void Board::saveBoard() {
+	PGconn* connection;
+	connection = PQconnectdb("host=localhost port=5432 dbname=postgres user=postgres password=0");
+	if (PQstatus(connection) != CONNECTION_BAD) {
+		cout << "Connection okay\n";
+	}
+	else {
+		cout << "Connection bad\n";
+	}
+
+	//PQexec(connection, "select * from board");
+	string insertStatement = "INSERT INTO board(countplayer1, countplayer2, board, lastavailable, player) VALUES(";
+	insertStatement+= to_string(counterPlayer1);
+	insertStatement += ", ";
+	insertStatement += to_string(counterPlayer2);
+	insertStatement += ", '{";
+	for (int i=0; i < 6; i++) {
+
+		insertStatement += "{";
+		for (int j=0; j < 7; j++) {
+			if (j == 6) {
+				insertStatement += to_string(board[j][i]);
+				break;
+			}
+			insertStatement += to_string(board[j][i]);
+			insertStatement += ", ";
+
+		}
+		if (i == 5) {
+			insertStatement += "} ";
+			break;
+		}
+		insertStatement += "}, ";
+	}
+
+	insertStatement += "}', ";
+	insertStatement += to_string(lastAvailable);
+	insertStatement += ", ";
+	insertStatement += to_string(player);
+	insertStatement += ");";
+	cout<< insertStatement;
+	
+	PGresult* res = PQexec(connection, insertStatement.c_str());
+	
+	ExecStatusType est = PQresultStatus(res);
+	if (est != PGRES_COMMAND_OK) {
+		cout << "Query unsuccessful";
+	}
+	else {
+		cout << "Query successful";
+	}
+	
+}
 
 void Board::printBoardConsole() {
 	cout << "Board:\n";
@@ -32,9 +87,6 @@ bool Board::moveAvailable(int row) {
 		return false;
 	}
 	return true;
-
-
-
 }
 
 bool Board::playMove(int row) {

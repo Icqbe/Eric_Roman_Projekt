@@ -1,5 +1,8 @@
 #include "Board.h"
-#include <iostream>;
+#include <iostream>
+//#include <assert.h>
+//#include <typeinfo>
+
 using namespace std;
 
 void main() {
@@ -13,6 +16,11 @@ void main() {
 	while (true) {
 		connect4.printBoardConsole();
 		cin >> row;
+		//assert(typeid(row) == typeid(int));
+		if (row==99) {
+			connect4.saveBoard();
+			return;
+		}
 		connect4.playMove(row);
 
 		if (connect4.checkWin(row)) {
